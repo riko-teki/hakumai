@@ -1,5 +1,6 @@
 use std::{
     env::args,
+    io::{Write, *},
     ops::{Shl, Shr},
     string::FromUtf8Error,
 };
@@ -10,15 +11,23 @@ const BASE32_TABLE: &str = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
 const BASE32HEX_TABLE: &str = "0123456789ABCDEFGHIJKLMNOPQRSTUV";
 const BASE16_TABLE: &str = "0123456789ABCDEF";
 
-const USAGE: &str = "USAGE:\n hakumai <mode> <string>";
+const USAGE: &str = "USAGE:\n hakumai <mode> <method> <string>";
 
 enum Mode {
     Encode,
     Decode,
 }
 
+enum Method {
+    Base64,
+    Base64Url,
+    Base32,
+    Base32Hex,
+    Base16,
+}
+
 fn main() {
-    if args().len() < 3 {
+    if args().len() < 4 {
         println!("{}", USAGE);
         return;
     }
@@ -29,13 +38,25 @@ fn main() {
         _ => unreachable!(),
     };
 
-    let input = args().nth(2).unwrap();
+    let method = match args().nth(2).unwrap().as_str() {
+        "64" => {}
+        "64u" => {}
+        "32" => {}
+        "32h" => {}
+        "16" => {}
+        _ => {}
+    };
+
+    let input = args().nth(3).unwrap();
 
     match mode {
         Mode::Encode => println!("{}", encode(input)),
         Mode::Decode => match decode_as_utf8(input.clone()) {
             Ok(v) => println!("{}", &v),
-            Err(_) => println!("{:?}", decode_as_binary(input)),
+            Err(_) => {
+                let mut writer = BufWriter::new(stdout());
+                writer.write(&decode_as_binary(input)).unwrap();
+            }
         },
     }
 
@@ -160,7 +181,7 @@ fn main() {
         decoded
     }
 
-    fn decode_as_utf8(input: String) -> Result<String, FromUtf8Error> {
+    fn decode_as_utf8(input: String) -> std::result::Result<String, FromUtf8Error> {
         String::from_utf8(decode_as_binary(input))
     }
 }
