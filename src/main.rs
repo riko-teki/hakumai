@@ -5,6 +5,11 @@ use std::{
 };
 
 const BASE64_TABLE: &str = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+const BASE64URL_TABLE: &str = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_"; // URLを扱う際に安全な文字列でエンコードするためのテーブル
+const BASE32_TABLE: &str = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
+const BASE32HEX_TABLE: &str = "0123456789ABCDEFGHIJKLMNOPQRSTUV";
+const BASE16_TABLE: &str = "0123456789ABCDEF";
+
 const USAGE: &str = "USAGE:\n hakumai <mode> <string>";
 
 enum Mode {
